@@ -1,12 +1,6 @@
-import { execFileSync } from 'node:child_process';
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { INestApplication } from '@nestjs/common';
-import { Test } from '@nestjs/testing';
 import type { Note } from '@team-notes/types';
 import request, { Response } from 'supertest';
-import { App } from 'supertest/types';
+import { createTestApp, TestApp } from './test-app';
 
 type ErrorBody = { error: { code: string; message: string } };
 
@@ -17,38 +11,18 @@ function bodyOf<T>(response: Response): T {
 }
 
 describe('Notes API', () => {
-  let app: INestApplication<App>;
-  let dbDir: string;
+  let testApp: TestApp;
 
   beforeAll(async () => {
-    // A throwaway SQLite file with the real migrations applied.
-    dbDir = mkdtempSync(join(tmpdir(), 'team-notes-'));
-    const databaseUrl = `file:${join(dbDir, 'test.db')}`;
-    process.env.DATABASE_URL = databaseUrl;
-    // Jest's process.env does not reach child processes, so pass it explicitly.
-    execFileSync('pnpm', ['exec', 'prisma', 'migrate', 'deploy'], {
-      env: { ...process.env, DATABASE_URL: databaseUrl },
-      stdio: 'ignore',
-    });
-
-    // Imported after DATABASE_URL is set, because PrismaService reads it when constructed.
-    const { AppModule } = await import('../src/app.module');
-    const { configureApp } = await import('../src/app.setup');
-    const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-    app = moduleRef.createNestApplication();
-    configureApp(app);
-    await app.init();
+    testApp = await createTestApp();
   });
 
   afterAll(async () => {
-    await app.close();
-    rmSync(dbDir, { recursive: true, force: true });
+    await testApp.close();
   });
 
   function api(userName: string | null = USER) {
-    const agent = request(app.getHttpServer());
+    const agent = request(testApp.app.getHttpServer());
     const withUser = <T extends request.Test>(req: T): T =>
       userName === null
         ? req

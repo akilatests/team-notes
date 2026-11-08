@@ -3,7 +3,7 @@ Team notes app. Humans use the React UI, AI agents use the MCP server.
 Both go through the same NestJS notes service. Time-boxed: small, polished, finished.
  
 ## Stack
-- apps/api/: NestJS + TypeScript + SQLite
+- apps/api/: NestJS + TypeScript + SQLite + Prisma
 - apps/web/: React 19 + TypeScript + Vite + shadcn/ui (Tailwind v4, lucide icons). Use shadcn components, add new ones with `pnpm dlx shadcn@latest add`. src/components/ui is generated: do not hand-edit, and it is excluded from lint
 - packages/elements/: Web Components. One for now: <tag-picker> (Shadow DOM, attributes in, custom events out)
 - packages/types/: shared TypeScript types (Note etc). Types only, apps/api imports with `import type`

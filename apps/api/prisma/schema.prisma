@@ -1,0 +1,23 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  // Nest compiles to CommonJS.
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Note {
+  id         Int      @id @default(autoincrement())
+  title      String
+  body       String   @default("")
+  /// JSON array of strings. SQLite has no list columns.
+  tags       String   @default("[]")
+  /// The X-User-Id name. For agent notes, the user the agent acted for.
+  authorName String
+  /// "human" | "agent". SQLite has no enums, so the API validates the value.
+  source     String   @default("human")
+  createdAt  DateTime @default(now())
+}

@@ -5,7 +5,7 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['eslint.config.ts', 'dist'],
+    ignores: ['eslint.config.ts', 'dist', 'src/generated'],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,

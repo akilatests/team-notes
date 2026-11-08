@@ -1,0 +1,10 @@
+-- CreateTable
+CREATE TABLE "Note" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "title" TEXT NOT NULL,
+    "body" TEXT NOT NULL DEFAULT '',
+    "tags" TEXT NOT NULL DEFAULT '[]',
+    "authorName" TEXT NOT NULL,
+    "source" TEXT NOT NULL DEFAULT 'human',
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

@@ -11,7 +11,12 @@
   },
   "pnpm": {
     "ignoredBuiltDependencies": [
-      "@swc/core"
+      "@swc/core",
+      "@prisma/engines"
+    ],
+    "onlyBuiltDependencies": [
+      "better-sqlite3",
+      "prisma"
     ]
   }
 }

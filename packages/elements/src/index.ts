@@ -1,1 +1,1 @@
-export { TagPicker } from './tag-picker.ts';
+export { TagPicker, TagsChangeEvent } from './tag-picker.ts'

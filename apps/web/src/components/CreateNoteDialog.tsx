@@ -1,7 +1,7 @@
 import type { CreateNoteInput } from '@team-notes/types'
 import { CircleAlert } from 'lucide-react'
-import { useId, useRef, useState, type FormEvent } from 'react'
-import '@team-notes/elements'
+import { TagsChangeEvent, type TagPicker } from '@team-notes/elements'
+import { useEffect, useId, useRef, useState, type FormEvent } from 'react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import {
@@ -40,11 +40,24 @@ type SaveStatus = 'idle' | 'saving' | 'error'
 function CreateNoteForm({ onCreate }: Pick<Props, 'onCreate'>) {
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
+  const [tags, setTags] = useState<string[]>([])
   const [titleError, setTitleError] = useState(false)
   const [status, setStatus] = useState<SaveStatus>('idle')
   const titleRef = useRef<HTMLInputElement>(null)
+  const tagPickerRef = useRef<TagPicker>(null)
   const id = useId()
   const titleErrorId = `${id}-title-error`
+
+  // Subscribing to a DOM event of the web component, so an effect is the right tool here.
+  useEffect(() => {
+    const picker = tagPickerRef.current
+    if (!picker) return
+    function handleTagsChange(event: Event) {
+      if (event instanceof TagsChangeEvent) setTags(event.tags)
+    }
+    picker.addEventListener(TagsChangeEvent.type, handleTagsChange)
+    return () => picker.removeEventListener(TagsChangeEvent.type, handleTagsChange)
+  }, [])
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -57,8 +70,7 @@ function CreateNoteForm({ onCreate }: Pick<Props, 'onCreate'>) {
     }
     setStatus('saving')
     try {
-      // shortcut: tags stay empty until the <tag-picker> element emits changes (t3).
-      await onCreate({ title: trimmed, body, tags: [] })
+      await onCreate({ title: trimmed, body, tags })
     } catch {
       // The draft stays in the form; the alert below tells the user to retry.
       setStatus('error')
@@ -121,7 +133,7 @@ function CreateNoteForm({ onCreate }: Pick<Props, 'onCreate'>) {
         />
       </div>
 
-      <tag-picker></tag-picker>
+      <tag-picker ref={tagPickerRef} label="Tags" tags={tags.join(',')}></tag-picker>
 
       <DialogFooter>
         <DialogClose asChild>

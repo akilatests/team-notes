@@ -31,7 +31,7 @@ export function CreateNoteDialog({ open, onClose, onCreate }: Props) {
   return (
     <Dialog open={open} onOpenChange={(next) => !next && onClose()}>
       {/* The page moves focus to the new note itself, so stop Radix returning it to the opener. */}
-      <DialogContent className="top-18 translate-y-0 sm:max-w-140" onCloseAutoFocus={(event) => event.preventDefault()}>
+      <DialogContent className="top-4 max-h-[calc(100dvh-2rem)] translate-y-0 overflow-y-auto sm:top-18 sm:max-h-[calc(100dvh-6rem)] sm:max-w-140" onCloseAutoFocus={(event) => event.preventDefault()}>
         <CreateNoteForm onCreate={onCreate} />
       </DialogContent>
     </Dialog>

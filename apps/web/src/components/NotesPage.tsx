@@ -2,6 +2,7 @@ import type { CreateNoteInput } from '@team-notes/types'
 import { useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import { useNotes } from '../notes/useNotes.ts'
+import { useSelectedNoteId } from '../notes/useSelectedNoteId.ts'
 import { CreateNoteDialog } from './CreateNoteDialog.tsx'
 import { DeleteNoteDialog } from './DeleteNoteDialog.tsx'
 import { Header } from './Header.tsx'
@@ -12,7 +13,6 @@ import { NoteList } from './NoteList.tsx'
 const MOBILE_QUERY = '(max-width: 767px)'
 
 type OpenDialog = 'create' | 'delete' | null
-type MobileView = 'list' | 'detail'
 
 type Props = {
   user: string
@@ -22,21 +22,21 @@ type Props = {
 export function NotesPage({ user, onSwitchUser }: Props) {
   const [query, setQuery] = useState('')
   const { list, reload, createNote, deleteNote } = useNotes(user, query)
-  const [selectedId, setSelectedId] = useState<number | null>(null)
+  const { selectedId, selectNote } = useSelectedNoteId()
   const [dialog, setDialog] = useState<OpenDialog>(null)
-  const [mobileView, setMobileView] = useState<MobileView>('list')
   const searchRef = useRef<HTMLInputElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
 
   const selected = list.status === 'ready' ? (list.notes.find((note) => note.id === selectedId) ?? null) : null
   const isEmpty = list.status === 'ready' && list.notes.length === 0 && query === ''
+  // An unfiltered list without the note means the URL points at a deleted or unknown note.
+  const isMissing = list.status === 'ready' && selectedId !== null && !selected && query === ''
+  // On phones a selected note replaces the list; Back (or 'All notes') returns to it.
+  const mobileView = selectedId === null ? 'list' : 'detail'
 
   // flushSync renders the new state now, so the element we focus next exists.
   function showNote(id: number) {
-    flushSync(() => {
-      setSelectedId(id)
-      setMobileView('detail')
-    })
+    flushSync(() => selectNote(id))
   }
 
   function handleOpen(id: number) {
@@ -60,8 +60,7 @@ export function NotesPage({ user, onSwitchUser }: Props) {
     await deleteNote(selected.id)
     flushSync(() => {
       setDialog(null)
-      setSelectedId(null)
-      setMobileView('list')
+      selectNote(null, { replace: true })
     })
     searchRef.current?.focus()
   }
@@ -71,7 +70,7 @@ export function NotesPage({ user, onSwitchUser }: Props) {
       <Header user={user} onSwitchUser={onSwitchUser} />
       <div className="group flex min-h-0 flex-1" data-view={mobileView}>
         <NoteList
-          className="min-w-0 flex-1 max-md:group-data-[view=detail]:hidden md:flex-[0_0_360px] md:border-r"
+          className="min-w-0 flex-1 max-md:group-data-[view=detail]:hidden md:flex-[0_0_20rem] md:border-r lg:flex-[0_0_22.5rem] xl:flex-[0_0_25rem]"
           list={list}
           query={query}
           onQueryChange={setQuery}
@@ -87,7 +86,8 @@ export function NotesPage({ user, onSwitchUser }: Props) {
           note={selected}
           isEmpty={isEmpty}
           onDelete={() => setDialog('delete')}
-          onBack={() => setMobileView('list')}
+          isMissing={isMissing}
+          onBack={() => selectNote(null)}
           headingRef={headingRef}
         />
       </div>

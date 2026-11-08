@@ -23,7 +23,7 @@ export function DeleteNoteDialog({ open, noteTitle, onClose, onConfirm }: Props)
   return (
     <AlertDialog open={open} onOpenChange={(next) => !next && onClose()}>
       {/* The page moves focus to search after a delete, so stop Radix returning it to the opener. */}
-      <AlertDialogContent onCloseAutoFocus={(event) => event.preventDefault()}>
+      <AlertDialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto" onCloseAutoFocus={(event) => event.preventDefault()}>
         <DeleteConfirm noteTitle={noteTitle} onConfirm={onConfirm} />
       </AlertDialogContent>
     </AlertDialog>

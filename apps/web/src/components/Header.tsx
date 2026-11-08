@@ -1,9 +1,7 @@
 import { NotebookText } from 'lucide-react'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
-import { initials } from '../notes/format.ts'
 import { ConnectAgentDialog } from './ConnectAgentDialog.tsx'
 import { ModeToggle } from './ModeToggle.tsx'
+import { UserMenu } from './UserMenu.tsx'
 
 type Props = {
   user: string
@@ -12,24 +10,15 @@ type Props = {
 
 export function Header({ user, onSwitchUser }: Props) {
   return (
-    <header className="flex h-14 flex-none items-center justify-between gap-3 border-b px-4 sm:px-6">
-      <span className="flex items-center gap-2 font-semibold tracking-tight whitespace-nowrap">
-        <NotebookText className="size-4.5 text-primary dark:text-accent-foreground" aria-hidden="true" />
-        Team Notes
+    <header className="flex h-14 flex-none items-center gap-2 border-b px-3 sm:px-6">
+      <span className="mr-auto flex min-w-0 items-center gap-2 font-semibold tracking-tight">
+        <NotebookText className="size-5 flex-none text-primary dark:text-accent-foreground" aria-hidden="true" />
+        <span className="truncate">Team Notes</span>
       </span>
-      <div className="flex min-w-0 items-center gap-2.5">
-        <Avatar className="size-7" aria-hidden="true">
-          <AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">
-            {initials(user)}
-          </AvatarFallback>
-        </Avatar>
-        <span className="min-w-0 truncate text-sm font-medium">{user}</span>
-        <span aria-hidden="true" className="h-4 w-px flex-none bg-border" />
+      <div className="flex flex-none items-center gap-1">
         <ConnectAgentDialog user={user} />
         <ModeToggle />
-        <Button variant="ghost" size="sm" className="text-primary dark:text-accent-foreground" onClick={onSwitchUser}>
-          Switch user
-        </Button>
+        <UserMenu user={user} onSwitchUser={onSwitchUser} />
       </div>
     </header>
   )

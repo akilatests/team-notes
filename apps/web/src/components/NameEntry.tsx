@@ -23,7 +23,7 @@ export function NameEntry({ onSubmit }: Props) {
   const errorId = `${id}-error`
 
   return (
-    <main className="relative flex min-h-dvh items-center justify-center bg-sidebar p-6">
+    <main className="relative flex min-h-dvh items-center justify-center bg-sidebar px-4 py-16 sm:p-6">
       <div className="absolute top-3 right-3">
         <ModeToggle />
       </div>

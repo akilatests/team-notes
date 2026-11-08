@@ -28,12 +28,12 @@ export function ConnectAgentDialog({ user }: Props) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm">
+        <Button variant="ghost" className="h-10 min-w-10 sm:h-9">
           <Bot />
           <span className="max-sm:sr-only">Connect an agent</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-140">
+      <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-140">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">Connect an agent</DialogTitle>
           <DialogDescription>

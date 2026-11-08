@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
+import { INPUT_LIMITS } from '../limits.ts'
 import type { NoteList as NoteListState } from '../notes/useNotes.ts'
 import { NoteRow } from './NoteRow.tsx'
 
@@ -74,6 +75,7 @@ export function NoteList({
             className="h-9 rounded-full px-9 [&::-webkit-search-cancel-button]:hidden"
             aria-label="Search notes by title, text or tag"
             placeholder="Search notes"
+            maxLength={INPUT_LIMITS.query}
             value={query}
             onChange={(event) => {
               onQueryChange(event.target.value)

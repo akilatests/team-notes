@@ -1,39 +1,39 @@
-import { CircleAlert, Info } from 'lucide-react'
-import { useId, useRef, useState, type FormEvent } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Info } from 'lucide-react'
+import { useId } from 'react'
+import { useForm } from 'react-hook-form'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { INPUT_LIMITS } from '../limits.ts'
+import { nameSchema } from '../user/nameSchema.ts'
+import { ModeToggle } from './ModeToggle.tsx'
 
 type Props = {
   onSubmit: (name: string) => void
 }
 
 export function NameEntry({ onSubmit }: Props) {
-  const [name, setName] = useState('')
-  const [showError, setShowError] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const form = useForm({ resolver: zodResolver(nameSchema), defaultValues: { name: '' } })
+  const error = form.formState.errors.name
   const id = useId()
   const helpId = `${id}-help`
   const errorId = `${id}-error`
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    const trimmed = name.trim()
-    if (!trimmed) {
-      setShowError(true)
-      inputRef.current?.focus()
-      return
-    }
-    onSubmit(trimmed)
-  }
-
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-sidebar p-6">
+    <main className="relative flex min-h-dvh items-center justify-center bg-sidebar p-6">
+      <div className="absolute top-3 right-3">
+        <ModeToggle />
+      </div>
       <Card className="w-full max-w-100">
         <CardContent>
-          <form className="flex flex-col gap-6" onSubmit={handleSubmit} noValidate>
+          <form
+            className="flex flex-col gap-6"
+            onSubmit={(event) => void form.handleSubmit(({ name }) => onSubmit(name))(event)}
+            noValidate
+          >
             <div className="flex items-center justify-between gap-3">
               <span className="font-semibold tracking-tight">Team Notes</span>
               <Badge variant="outline" className="text-muted-foreground">
@@ -42,39 +42,27 @@ export function NameEntry({ onSubmit }: Props) {
               </Badge>
             </div>
 
-            <div className="flex flex-col gap-2">
-              <Label htmlFor={id} className="text-2xl font-semibold tracking-tight">
+            <Field data-invalid={error !== undefined}>
+              <FieldLabel htmlFor={id} className="text-2xl font-semibold tracking-tight">
                 What’s your name?
-              </Label>
-              <p id={helpId} className="text-muted-foreground">
+              </FieldLabel>
+              <FieldDescription id={helpId}>
                 This isn’t a real sign-in. There’s no password — your name is only shown on the notes you create.
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-2">
+              </FieldDescription>
               <Input
                 id={id}
-                ref={inputRef}
                 className="h-11 text-base"
                 type="text"
                 autoComplete="name"
+                maxLength={INPUT_LIMITS.userName}
                 autoFocus
                 placeholder="e.g. Maya Okafor"
-                value={name}
-                onChange={(event) => {
-                  setName(event.target.value)
-                  setShowError(false)
-                }}
-                aria-invalid={showError}
-                aria-describedby={showError ? `${errorId} ${helpId}` : helpId}
+                aria-invalid={error !== undefined}
+                aria-describedby={error ? `${errorId} ${helpId}` : helpId}
+                {...form.register('name')}
               />
-              {showError && (
-                <p id={errorId} role="alert" className="flex items-center gap-1.5 text-sm text-destructive">
-                  <CircleAlert className="size-4" aria-hidden="true" />
-                  Enter your name to continue.
-                </p>
-              )}
-            </div>
+              <FieldError id={errorId} errors={[error]} />
+            </Field>
 
             <Button type="submit" size="lg" className="h-11">
               Continue

@@ -2,6 +2,7 @@ import { NotebookText } from 'lucide-react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { initials } from '../notes/format.ts'
+import { ModeToggle } from './ModeToggle.tsx'
 
 type Props = {
   user: string
@@ -23,6 +24,7 @@ export function Header({ user, onSwitchUser }: Props) {
         </Avatar>
         <span className="min-w-0 truncate text-sm font-medium">{user}</span>
         <span aria-hidden="true" className="h-4 w-px flex-none bg-border" />
+        <ModeToggle />
         <Button variant="ghost" size="sm" className="text-primary dark:text-accent-foreground" onClick={onSwitchUser}>
           Switch user
         </Button>

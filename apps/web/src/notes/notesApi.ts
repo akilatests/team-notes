@@ -1,59 +1,32 @@
 import type { CreateNoteInput, Note } from '@team-notes/types'
-import { FAKE_NOTES } from './fakeNotes.ts'
+import axios, { isAxiosError } from 'axios'
 
-// shortcut: in-memory fake for t2. t5 swaps these bodies for fetch calls; the signatures stay.
-const FAKE_LATENCY_MS = 500
-const FAIL_PARAM = 'fail'
+const USER_HEADER = 'X-User-Id'
 
-type FakeFailure = 'list' | 'save' | 'delete'
+const api = axios.create({ baseURL: '/api' })
 
-let notes = [...FAKE_NOTES]
-let nextId = notes.length + 1
+api.interceptors.response.use(undefined, (error: unknown) => {
+  if (isAxiosError<{ error?: { message?: unknown } }>(error)) {
+    const message = error.response?.data?.error?.message
+    return Promise.reject(new Error(typeof message === 'string' ? message : error.message))
+  }
+  return Promise.reject(error)
+})
 
-// Preview the error states with ?fail=list, ?fail=save or ?fail=delete.
-function shouldFail(action: FakeFailure): boolean {
-  return new URLSearchParams(window.location.search).getAll(FAIL_PARAM).includes(action)
+function userHeaders(userName: string) {
+  return { [USER_HEADER]: encodeURIComponent(userName) }
 }
 
-function respond<T>(action: FakeFailure, result: () => T): Promise<T> {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (shouldFail(action)) reject(new Error(`Fake ${action} failure`))
-      else resolve(result())
-    }, FAKE_LATENCY_MS)
-  })
+export async function listNotes(userName: string, query: string): Promise<Note[]> {
+  const { data } = await api.get<Note[]>('/notes', { params: { q: query }, headers: userHeaders(userName) })
+  return data
 }
 
-function matches(note: Note, query: string): boolean {
-  const q = query.trim().toLowerCase()
-  if (!q) return true
-  return (
-    note.title.toLowerCase().includes(q) ||
-    note.body.toLowerCase().includes(q) ||
-    note.tags.some((tag) => tag.toLowerCase().includes(q))
-  )
+export async function createNote(userName: string, input: CreateNoteInput): Promise<Note> {
+  const { data } = await api.post<Note>('/notes', input, { headers: userHeaders(userName) })
+  return data
 }
 
-export function listNotes(query: string): Promise<Note[]> {
-  return respond('list', () => notes.filter((note) => matches(note, query)))
-}
-
-export function createNote(userName: string, input: CreateNoteInput): Promise<Note> {
-  return respond('save', () => {
-    const note: Note = {
-      ...input,
-      id: nextId++,
-      authorName: userName,
-      source: 'human',
-      createdAt: new Date().toISOString(),
-    }
-    notes = [note, ...notes]
-    return note
-  })
-}
-
-export function deleteNote(id: number): Promise<void> {
-  return respond('delete', () => {
-    notes = notes.filter((note) => note.id !== id)
-  })
+export async function deleteNote(userName: string, id: number): Promise<void> {
+  await api.delete(`/notes/${id}`, { headers: userHeaders(userName) })
 }

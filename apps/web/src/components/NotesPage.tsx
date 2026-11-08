@@ -78,7 +78,7 @@ export function NotesPage({ user, onSwitchUser }: Props) {
           selectedId={selectedId}
           onOpen={handleOpen}
           onNewNote={() => setDialog('create')}
-          onRetry={reload}
+          onRetry={() => void reload()}
           searchRef={searchRef}
         />
         <NoteDetail

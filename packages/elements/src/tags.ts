@@ -6,12 +6,23 @@ export function hasTag(tags: readonly string[], tag: string): boolean {
   return tags.some((existing) => existing.toLowerCase() === wanted)
 }
 
-/** Adds every comma-separated tag in `text`, trimmed, skipping blanks and case-insensitive duplicates. */
-export function addTags(tags: readonly string[], text: string): string[] {
+/** The comma-separated tags in `text`, trimmed, without blanks. */
+export function splitTags(text: string): string[] {
+  return text
+    .split(TAG_SEPARATOR)
+    .map((part) => part.trim())
+    .filter((tag) => tag.length > 0)
+}
+
+/**
+ * Adds every comma-separated tag in `text`, skipping case-insensitive duplicates.
+ * Stops once the list holds `maxCount` tags.
+ */
+export function addTags(tags: readonly string[], text: string, maxCount = Infinity): string[] {
   const result = [...tags]
-  for (const part of text.split(TAG_SEPARATOR)) {
-    const tag = part.trim()
-    if (tag && !hasTag(result, tag)) result.push(tag)
+  for (const tag of splitTags(text)) {
+    if (result.length >= maxCount) break
+    if (!hasTag(result, tag)) result.push(tag)
   }
   return result
 }

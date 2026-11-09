@@ -1,7 +1,10 @@
-import { addTags, parseTags } from './tags.ts'
+import { addTags, parseTags, splitTags } from './tags.ts'
 
 const TAG_NAME = 'tag-picker'
 const DEFAULT_LABEL = 'Tags'
+const DEFAULT_HINT = 'Press Enter to add a tag. Backspace removes the last one.'
+const DEFAULT_PLACEHOLDER = 'Add a tag'
+const LIMIT_PLACEHOLDER = 'Tag limit reached'
 
 /** Fired after the user adds or removes a tag. Bubbles out of the shadow root. */
 export class TagsChangeEvent extends Event {
@@ -25,7 +28,7 @@ const STYLES = `
   }
   .box:focus-within {
     border-color: var(--ring, #3b4fb8);
-    box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring, #3b4fb8) 50%, transparent);
+    box-shadow: 0 0 0 2px color-mix(in oklch, var(--ring, #3b4fb8) 30%, transparent);
   }
   ul { display: contents; margin: 0; padding: 0; list-style: none; }
   ul[hidden] { display: none; }
@@ -54,9 +57,9 @@ const TEMPLATE = `
   <label for="input"></label>
   <div class="box">
     <ul aria-label="Added tags"></ul>
-    <input id="input" type="text" autocomplete="off" placeholder="Add a tag" aria-describedby="hint" />
+    <input id="input" type="text" autocomplete="off" aria-describedby="hint" />
   </div>
-  <p id="hint" class="hint">Press Enter to add a tag. Backspace removes the last one.</p>
+  <p id="hint" class="hint"></p>
   <p class="live" aria-live="polite"></p>
 `
 
@@ -69,19 +72,29 @@ function requireElement<T extends Element>(root: ParentNode, selector: string, t
   return element
 }
 
+/** A positive whole number from an attribute, or undefined when missing or invalid. */
+function positiveInt(value: string | null): number | undefined {
+  const parsed = Number(value)
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : undefined
+}
+
 /**
- * Attributes in: `label` (default "Tags") and `tags` (comma-separated).
+ * Attributes in: `label` (default "Tags"), `tags` (comma-separated),
+ * `max-tags` and `max-tag-length` (optional limits; none by default).
  * Events out: `tags-change` (a TagsChangeEvent) with the full new list.
  * The host owns the value: it should write the new list back to `tags`.
  */
 export class TagPicker extends HTMLElement {
-  static observedAttributes = ['label', 'tags']
+  static observedAttributes = ['label', 'tags', 'max-tags', 'max-tag-length']
 
   #tags: string[] = []
+  #maxTags = Infinity
+  #maxTagLength = Infinity
   readonly #label: HTMLLabelElement
   readonly #list: HTMLUListElement
   readonly #input: HTMLInputElement
   readonly #live: HTMLParagraphElement
+  readonly #hint: HTMLParagraphElement
 
   constructor() {
     super()
@@ -91,9 +104,11 @@ export class TagPicker extends HTMLElement {
     this.#list = requireElement(root, 'ul', HTMLUListElement)
     this.#input = requireElement(root, 'input', HTMLInputElement)
     this.#live = requireElement(root, '.live', HTMLParagraphElement)
+    this.#hint = requireElement(root, '#hint', HTMLParagraphElement)
     this.#label.textContent = DEFAULT_LABEL
 
     this.#input.addEventListener('keydown', (event) => this.#onKeyDown(event))
+    this.#input.addEventListener('input', () => this.#renderHint())
     requireElement(root, '.box', HTMLDivElement).addEventListener('click', (event) => {
       if (event.target === event.currentTarget) this.#input.focus()
     })
@@ -106,6 +121,11 @@ export class TagPicker extends HTMLElement {
       this.#tags = parseTags(newValue)
       this.#renderTags()
     }
+    if (name === 'max-tags') {
+      this.#maxTags = positiveInt(newValue) ?? Infinity
+      this.#renderHint()
+    }
+    if (name === 'max-tag-length') this.#maxTagLength = positiveInt(newValue) ?? Infinity
   }
 
   #onKeyDown(event: KeyboardEvent) {
@@ -120,14 +140,38 @@ export class TagPicker extends HTMLElement {
   }
 
   #add(text: string) {
-    const next = addTags(this.#tags, text)
-    const typed = text.trim()
-    this.#input.value = ''
-    if (next.length === this.#tags.length) {
-      if (typed) this.#announce(`${typed} is already added`)
+    // Checked per tag, not with the input's maxlength, which would cut a pasted list mid-tag.
+    const tooLong = splitTags(text).find((tag) => tag.length > this.#maxTagLength)
+    if (tooLong) {
+      // Keep the text so the user can shorten it.
+      const message = `“${tooLong}” is longer than ${this.#maxTagLength} characters.`
+      this.#hint.textContent = message
+      this.#announce(message)
       return
     }
-    this.#commit(next, `Added ${next.slice(this.#tags.length).join(', ')}`)
+    const next = addTags(this.#tags, text, this.#maxTags)
+    const typed = text.trim()
+    const hitLimit = addTags(this.#tags, text).length > next.length
+    this.#input.value = ''
+    if (next.length === this.#tags.length) {
+      if (hitLimit) this.#announce(this.#limitMessage())
+      else if (typed) this.#announce(`${typed} is already added`)
+      return
+    }
+    const added = `Added ${next.slice(this.#tags.length).join(', ')}`
+    this.#commit(next, hitLimit ? `${added}. ${this.#limitMessage()}` : added)
+  }
+
+  #limitMessage() {
+    return `Maximum of ${this.#maxTags} tags reached. Remove one to add another.`
+  }
+
+  #renderHint() {
+    const atLimit = this.#tags.length >= this.#maxTags
+    this.#hint.textContent = atLimit ? this.#limitMessage() : DEFAULT_HINT
+    this.#input.placeholder = atLimit ? LIMIT_PLACEHOLDER : DEFAULT_PLACEHOLDER
+    // Read-only, not disabled: the field keeps focus and Backspace can still remove the last tag.
+    this.#input.readOnly = atLimit
   }
 
   #removeAt(index: number) {
@@ -152,6 +196,7 @@ export class TagPicker extends HTMLElement {
   }
 
   #renderTags() {
+    this.#renderHint()
     this.#list.hidden = this.#tags.length === 0
     this.#list.replaceChildren(
       ...this.#tags.map((tag, index) => {
@@ -170,7 +215,9 @@ export class TagPicker extends HTMLElement {
   }
 }
 
-// Guard against double registration on Vite HMR reloads.
 if (!customElements.get(TAG_NAME)) {
   customElements.define(TAG_NAME, TagPicker)
 }
+
+// A custom element cannot be redefined, so in dev a change to this file needs a full page reload.
+import.meta.hot?.accept(() => window.location.reload())

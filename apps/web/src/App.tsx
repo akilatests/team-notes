@@ -1,6 +1,6 @@
-import { NameEntry } from './components/NameEntry.tsx'
-import { NotesPage } from './components/NotesPage.tsx'
-import { useStoredUser } from './user/useStoredUser.ts'
+import { NameEntry } from '@/components/NameEntry'
+import { NotesPage } from '@/components/NotesPage'
+import { useStoredUser } from '@/user/useStoredUser'
 
 export function App() {
   const { user, signIn, switchUser } = useStoredUser()

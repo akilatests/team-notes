@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { initials } from '../notes/format.ts'
+import { initials } from '@/notes/format'
 
 type Props = {
   user: string
@@ -31,10 +31,7 @@ export function UserMenu({ user, onSwitchUser }: Props) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel className="grid gap-0.5">
-          <span className="truncate">{user}</span>
-          <span className="text-xs font-normal text-muted-foreground">Demo identity, no password</span>
-        </DropdownMenuLabel>
+        <DropdownMenuLabel className="truncate">{user}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={onSwitchUser}>
           <LogOut />

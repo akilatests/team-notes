@@ -11,6 +11,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { errorDetail } from '@/notes/apiError'
 
 type Props = {
   open: boolean
@@ -30,7 +31,7 @@ export function DeleteNoteDialog({ open, noteTitle, onClose, onConfirm }: Props)
   )
 }
 
-type DeleteStatus = 'idle' | 'deleting' | 'error'
+type DeleteStatus = 'idle' | 'deleting' | { error: string }
 
 function DeleteConfirm({ noteTitle, onConfirm }: Pick<Props, 'noteTitle' | 'onConfirm'>) {
   const [status, setStatus] = useState<DeleteStatus>('idle')
@@ -40,9 +41,9 @@ function DeleteConfirm({ noteTitle, onConfirm }: Pick<Props, 'noteTitle' | 'onCo
     setStatus('deleting')
     try {
       await onConfirm()
-    } catch {
-      // The note is kept; the alert below tells the user to retry.
-      setStatus('error')
+    } catch (error) {
+      // The note is kept; the alert below says why and the user can retry.
+      setStatus({ error: errorDetail(error) })
     }
   }
 
@@ -55,13 +56,12 @@ function DeleteConfirm({ noteTitle, onConfirm }: Pick<Props, 'noteTitle' | 'onCo
         </AlertDialogDescription>
       </AlertDialogHeader>
 
-      {status === 'error' && (
+      {typeof status === 'object' && (
         <Alert variant="destructive" role="alert">
           <CircleAlert />
           <AlertDescription>
             <p>
-              <strong className="font-semibold">Couldn’t delete the note.</strong> It’s still there. Check your
-              connection and try again.
+              <strong className="font-semibold">Couldn’t delete the note.</strong> It’s still there. {status.error}
             </p>
           </AlertDescription>
         </Alert>
@@ -72,7 +72,7 @@ function DeleteConfirm({ noteTitle, onConfirm }: Pick<Props, 'noteTitle' | 'onCo
         <AlertDialogCancel>Cancel</AlertDialogCancel>
         {/* A plain Button, not AlertDialogAction: that closes at once and would hide a failed delete. */}
         <Button variant="destructive" onClick={handleConfirm}>
-          {status === 'deleting' ? 'Deleting…' : status === 'error' ? 'Try again' : 'Delete note'}
+          {status === 'deleting' ? 'Deleting…' : typeof status === 'object' ? 'Try again' : 'Delete note'}
         </Button>
       </AlertDialogFooter>
     </>

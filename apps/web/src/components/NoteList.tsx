@@ -5,9 +5,9 @@ import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
-import { INPUT_LIMITS } from '../limits.ts'
-import type { NoteList as NoteListState } from '../notes/useNotes.ts'
-import { NoteRow } from './NoteRow.tsx'
+import { INPUT_LIMITS } from '@/limits'
+import type { NoteList as NoteListState } from '@/notes/useNotes'
+import { NoteRow } from '@/components/NoteRow'
 
 const SKELETON_ROWS = 6
 const ROW_SELECTOR = 'button[data-row]'
@@ -100,7 +100,7 @@ export function NoteList({
         </Button>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-auto px-2 pb-4">
+      <div className="relative min-h-0 flex-1 overflow-auto px-2 pb-4">
         {list.status === 'loading' && <LoadingRows />}
 
         {list.status === 'error' && (

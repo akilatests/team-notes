@@ -1,7 +1,7 @@
 import { NotebookText } from 'lucide-react'
-import { ConnectAgentDialog } from './ConnectAgentDialog.tsx'
-import { ModeToggle } from './ModeToggle.tsx'
-import { UserMenu } from './UserMenu.tsx'
+import { ConnectAgentDialog } from '@/components/ConnectAgentDialog'
+import { ModeToggle } from '@/components/ModeToggle'
+import { UserMenu } from '@/components/UserMenu'
 
 type Props = {
   user: string

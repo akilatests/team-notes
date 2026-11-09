@@ -5,9 +5,9 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { formatFull, initials } from '../notes/format.ts'
-import type { NoteList } from '../notes/useNotes.ts'
-import { AgentBadge } from './AgentBadge.tsx'
+import { formatFull, initials } from '@/notes/format'
+import type { NoteList } from '@/notes/useNotes'
+import { AgentBadge } from '@/components/AgentBadge'
 
 type Props = {
   className: string
@@ -26,7 +26,7 @@ export function NoteDetail({ className, status, note, isEmpty, isMissing, onDele
       {status === 'loading' && <LoadingDetail />}
       {status !== 'loading' && !note && <Placeholder status={status} isEmpty={isEmpty} isMissing={isMissing} onBack={onBack} />}
       {note && (
-        <article aria-labelledby={`note-${note.id}`} className="flex max-w-180 flex-col gap-4 px-4 pt-3 pb-10 sm:px-6 md:px-10 md:pt-10 md:pb-16 lg:px-12">
+        <article aria-labelledby={`note-${note.id}`} className="mx-auto flex w-full max-w-180 flex-col gap-4 px-4 pt-3 pb-10 sm:px-6 md:px-10 md:pt-10 md:pb-16">
           <Button variant="ghost" size="lg" className="-ml-2 self-start text-primary md:hidden dark:text-accent-foreground" onClick={onBack}>
             <ChevronLeft />
             All notes
@@ -46,18 +46,15 @@ export function NoteDetail({ className, status, note, isEmpty, isMissing, onDele
             </Button>
           </div>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[13px] text-muted-foreground">
-            {note.source === 'agent' ? (
-              <AgentBadge authorName={note.authorName} full />
-            ) : (
-              <span className="flex items-center gap-1.5 font-medium text-foreground">
-                <Avatar className="size-5" aria-hidden="true">
-                  <AvatarFallback className="bg-primary text-[10px] font-semibold text-primary-foreground">
-                    {initials(note.authorName)}
-                  </AvatarFallback>
-                </Avatar>
-                {note.authorName}
-              </span>
-            )}
+            <span className="flex items-center gap-1.5 font-medium text-foreground">
+              <Avatar className="size-5" aria-hidden="true">
+                <AvatarFallback className="bg-primary text-[10px] font-semibold text-primary-foreground">
+                  {initials(note.authorName)}
+                </AvatarFallback>
+              </Avatar>
+              {note.authorName}
+              {note.source === 'agent' && <AgentBadge authorName={note.authorName} />}
+            </span>
             <span>
               Created <time dateTime={note.createdAt}>{formatFull(note.createdAt)}</time>
             </span>
@@ -114,7 +111,7 @@ function Placeholder({ status, isEmpty, isMissing, onBack }: PlaceholderProps) {
 
 function LoadingDetail() {
   return (
-    <div aria-hidden="true" className="flex max-w-180 flex-col gap-3.5 px-4 pt-3 sm:px-6 md:px-10 md:pt-10 lg:px-12">
+    <div aria-hidden="true" className="mx-auto flex w-full max-w-180 flex-col gap-3.5 px-4 pt-3 sm:px-6 md:px-10 md:pt-10">
       <Skeleton className="h-5.5 w-1/2" />
       <div className="flex items-center gap-2">
         <Skeleton className="size-5 rounded-full" />

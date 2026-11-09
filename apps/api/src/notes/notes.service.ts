@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import type { CreateNoteInput, Note, NoteSource } from '@team-notes/types';
-import { PrismaService } from '../prisma/prisma.service';
-import { toNote } from './note.mapper';
+import { PrismaService } from '@/prisma/prisma.service';
+import { toNote } from '@/notes/note.mapper';
 
 /** The one place notes are read and written. REST and MCP both call this. */
 @Injectable()

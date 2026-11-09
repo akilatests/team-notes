@@ -30,10 +30,6 @@ export function formatFull(iso: string): string {
   return fullDate.format(new Date(iso))
 }
 
-export function firstName(name: string): string {
-  return name.trim().split(/\s+/)[0] ?? name
-}
-
 export function initials(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean)
   const first = parts[0]?.[0] ?? ''

@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { configureApp } from './app.setup';
+import { AppModule } from '@/app.module';
+import { configureApp } from '@/app.setup';
 
 const DEFAULT_PORT = 3000;
 

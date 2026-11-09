@@ -8,6 +8,8 @@ declare module 'react' {
         label?: string
         /** Comma-separated. */
         tags?: string
+        'max-tags'?: number
+        'max-tag-length'?: number
       }
     }
   }

@@ -1,9 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
-import { App } from './App.tsx'
-import { applyTheme, readTheme } from './theme/theme.ts'
-import { ThemeProvider } from './theme/ThemeProvider.tsx'
+import '@/index.css'
+import { App } from '@/App'
+import { AppToaster } from '@/components/AppToaster'
+import { applyTheme, readTheme } from '@/theme/theme'
+import { ThemeProvider } from '@/theme/ThemeProvider'
 
 // Before the first render, so a saved dark theme does not flash light.
 applyTheme(readTheme())
@@ -15,6 +16,7 @@ createRoot(rootElement).render(
   <StrictMode>
     <ThemeProvider>
       <App />
+      <AppToaster />
     </ThemeProvider>
   </StrictMode>,
 )

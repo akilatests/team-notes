@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
-import { useNotesStore } from './notesStore.ts'
+import { useNotesStore } from '@/notes/notesStore'
 
-export type { NoteList } from './notesStore.ts'
+export type { NoteList } from '@/notes/notesStore'
 
 const SEARCH_DELAY_MS = 250
 

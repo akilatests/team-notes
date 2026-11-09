@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { localhostHostValidation } from '@modelcontextprotocol/sdk/server/middleware/hostHeaderValidation.js';
-import { NotesModule } from '../notes/notes.module';
-import { McpController } from './mcp.controller';
+import { NotesModule } from '@/notes/notes.module';
+import { McpController } from '@/mcp/mcp.controller';
 
 @Module({
   imports: [NotesModule],

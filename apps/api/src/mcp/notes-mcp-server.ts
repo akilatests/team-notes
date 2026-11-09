@@ -1,8 +1,8 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
-import { NOTE_LIMITS } from '../notes/note-limits';
-import { NotesService } from '../notes/notes.service';
+import { NOTE_LIMITS } from '@/notes/note-limits';
+import { NotesService } from '@/notes/notes.service';
 
 const SERVER_INFO = { name: 'team-notes', version: '1.0.0' };
 

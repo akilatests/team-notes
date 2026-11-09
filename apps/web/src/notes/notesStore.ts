@@ -1,6 +1,7 @@
 import type { CreateNoteInput, Note } from '@team-notes/types'
 import { create } from 'zustand'
-import * as notesApi from './notesApi.ts'
+import { isNotFound } from '@/notes/apiError'
+import * as notesApi from '@/notes/notesApi'
 
 export type NoteList =
   | { status: 'loading' }
@@ -55,7 +56,12 @@ export const useNotesStore = create<NotesState>()((set, get) => ({
   },
 
   async deleteNote(id) {
-    await notesApi.deleteNote(get().userName, id)
+    try {
+      await notesApi.deleteNote(get().userName, id)
+    } catch (error) {
+      // Someone else already deleted it: the outcome the user wanted, so not an error.
+      if (!isNotFound(error)) throw error
+    }
     const { list } = get()
     if (list.status === 'ready') {
       set({ list: { status: 'ready', notes: list.notes.filter((note) => note.id !== id) } })

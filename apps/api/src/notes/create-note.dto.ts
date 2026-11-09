@@ -9,7 +9,7 @@ import {
   Matches,
   MaxLength,
 } from 'class-validator';
-import { NOTE_LIMITS } from './note-limits';
+import { NOTE_LIMITS } from '@/notes/note-limits';
 
 const NO_COMMA = /^[^,]*$/;
 

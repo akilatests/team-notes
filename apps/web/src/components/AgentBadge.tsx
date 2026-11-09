@@ -1,18 +1,20 @@
-import { Sparkles } from 'lucide-react'
+import { Bot } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { firstName } from '../notes/format.ts'
 
 type Props = {
   authorName: string
-  /** Long form for the detail view: "Created by agent for Priya Raman". */
-  full?: boolean
 }
 
-export function AgentBadge({ authorName, full = false }: Props) {
+/** Marks a note an AI agent created on the author's behalf. */
+export function AgentBadge({ authorName }: Props) {
   return (
-    <Badge variant="outline" className="border-primary/25 bg-accent text-accent-foreground">
-      <Sparkles aria-hidden="true" />
-      {full ? `Created by agent for ${authorName}` : `Agent for ${firstName(authorName)}`}
+    <Badge
+      variant="secondary"
+      className="h-4.5 gap-1 px-1.5 text-[11px] font-medium text-muted-foreground"
+      title={`Created by an AI agent on behalf of ${authorName}`}
+    >
+      <Bot aria-hidden="true" />
+      Agent
     </Badge>
   )
 }

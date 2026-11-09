@@ -1,13 +1,14 @@
 import type { CreateNoteInput } from '@team-notes/types'
 import { useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
-import { useNotes } from '../notes/useNotes.ts'
-import { useSelectedNoteId } from '../notes/useSelectedNoteId.ts'
-import { CreateNoteDialog } from './CreateNoteDialog.tsx'
-import { DeleteNoteDialog } from './DeleteNoteDialog.tsx'
-import { Header } from './Header.tsx'
-import { NoteDetail } from './NoteDetail.tsx'
-import { NoteList } from './NoteList.tsx'
+import { toast } from 'sonner'
+import { useNotes } from '@/notes/useNotes'
+import { useSelectedNoteId } from '@/notes/useSelectedNoteId'
+import { CreateNoteDialog } from '@/components/CreateNoteDialog'
+import { DeleteNoteDialog } from '@/components/DeleteNoteDialog'
+import { Header } from '@/components/Header'
+import { NoteDetail } from '@/components/NoteDetail'
+import { NoteList } from '@/components/NoteList'
 
 // Tailwind's md breakpoint: below it, list and detail are separate views.
 const MOBILE_QUERY = '(max-width: 767px)'
@@ -53,6 +54,7 @@ export function NotesPage({ user, onSwitchUser }: Props) {
     })
     showNote(note.id)
     headingRef.current?.focus()
+    toast.success('Note created')
   }
 
   async function handleDelete() {
@@ -63,6 +65,7 @@ export function NotesPage({ user, onSwitchUser }: Props) {
       selectNote(null, { replace: true })
     })
     searchRef.current?.focus()
+    toast.success('Note deleted')
   }
 
   return (

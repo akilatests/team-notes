@@ -13,10 +13,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import type { Note } from '@team-notes/types';
-import { UserGuard, UserName } from '../common/user-name';
-import { CreateNoteDto } from './create-note.dto';
-import { NotesService } from './notes.service';
-import { SearchNotesDto } from './search-notes.dto';
+import { UserGuard, UserName } from '@/common/user-name';
+import { CreateNoteDto } from '@/notes/create-note.dto';
+import { NotesService } from '@/notes/notes.service';
+import { SearchNotesDto } from '@/notes/search-notes.dto';
 
 @Controller('notes')
 @UseGuards(UserGuard)

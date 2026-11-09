@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dialog'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { agentClients, type Snippet } from '../agents/agentClients.ts'
+import { agentClients, type Snippet } from '@/agents/agentClients'
 
 const CLIENT_SELECT_ID = 'agent-client'
 
@@ -69,8 +69,7 @@ export function ConnectAgentDialog({ user }: Props) {
 
         <DialogFooter className="text-xs text-muted-foreground sm:justify-start">
           <p>
-            Demo identity, not real auth: anyone with this header can act as you. ChatGPT needs a public HTTPS server
-            with OAuth, so use Codex for OpenAI.
+            ChatGPT needs a public HTTPS server with OAuth, so use Codex for OpenAI.
           </p>
         </DialogFooter>
       </DialogContent>

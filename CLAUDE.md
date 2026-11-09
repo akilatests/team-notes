@@ -4,7 +4,7 @@ Both go through the same NestJS notes service. Time-boxed: small, polished, fini
  
 ## Stack
 - apps/api/: NestJS + TypeScript + SQLite + Prisma
-- apps/web/: React 19 + TypeScript + Vite + shadcn/ui (Tailwind v4, lucide icons) + Zustand. Use shadcn components, add new ones with `pnpm dlx shadcn@latest add`. src/components/ui is generated: do not hand-edit, and it is excluded from lint
+- apps/web/: React 19 + TypeScript + Vite + shadcn/ui (Tailwind v4, lucide icons) + Zustand. Use shadcn components, add new ones with `pnpm dlx shadcn@latest add`. src/components/ui is generated: do not hand-edit (one exception: focus rings were changed from 3px at 50% to 2px at 30%), and it is excluded from lint
 - packages/elements/: Web Components. One for now: <tag-picker> (Shadow DOM, attributes in, custom events out)
 - packages/types/: shared TypeScript types (Note etc). Types only, apps/api imports with `import type`
 - MCP endpoint at /mcp inside the NestJS app, calling the same notes service

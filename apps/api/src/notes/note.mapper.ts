@@ -1,5 +1,5 @@
 import type { Note, NoteSource } from '@team-notes/types';
-import type { Note as NoteRow } from '../generated/prisma/client';
+import type { Note as NoteRow } from '@/generated/prisma/client';
 
 const NOTE_SOURCES: readonly NoteSource[] = ['human', 'agent'];
 

@@ -1,6 +1,6 @@
 import type { CreateNoteInput } from '@team-notes/types'
 import { z } from 'zod'
-import { INPUT_LIMITS } from '../limits.ts'
+import { INPUT_LIMITS } from '@/limits'
 
 export const createNoteSchema = z.object({
   title: z.string().trim().min(1, 'Add a title to save this note.').max(INPUT_LIMITS.title),

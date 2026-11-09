@@ -18,8 +18,9 @@ import {
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { INPUT_LIMITS } from '../limits.ts'
-import { createNoteSchema } from '../notes/createNoteSchema.ts'
+import { INPUT_LIMITS } from '@/limits'
+import { errorDetail } from '@/notes/apiError'
+import { createNoteSchema } from '@/notes/createNoteSchema'
 
 type Props = {
   open: boolean
@@ -63,9 +64,9 @@ function CreateNoteForm({ onCreate }: Pick<Props, 'onCreate'>) {
   async function save(input: CreateNoteInput) {
     try {
       await onCreate(input)
-    } catch {
-      // The draft stays in the form; the alert below tells the user to retry.
-      form.setError('root', { message: 'Couldn’t save your note.' })
+    } catch (error) {
+      // The draft stays in the form; the alert below says why and the user can retry.
+      form.setError('root', { message: errorDetail(error) })
     }
   }
 
@@ -92,8 +93,7 @@ function CreateNoteForm({ onCreate }: Pick<Props, 'onCreate'>) {
           <CircleAlert />
           <AlertDescription>
             <p>
-              <strong className="font-semibold">{errors.root.message}</strong> Your text is still here. Check your
-              connection and try again.
+              <strong className="font-semibold">Couldn’t save your note.</strong> Your text is still here. {errors.root.message}
             </p>
           </AlertDescription>
         </Alert>
@@ -129,7 +129,13 @@ function CreateNoteForm({ onCreate }: Pick<Props, 'onCreate'>) {
       </Field>
 
       <Field data-invalid={errors.tags !== undefined}>
-        <tag-picker ref={tagPickerRef} label="Tags" tags={tags.join(',')}></tag-picker>
+        <tag-picker
+          ref={tagPickerRef}
+          label="Tags"
+          tags={tags.join(',')}
+          max-tags={INPUT_LIMITS.tagsMaxCount}
+          max-tag-length={INPUT_LIMITS.tagMaxLength}
+        ></tag-picker>
         <FieldError errors={[errors.tags]} />
       </Field>
 

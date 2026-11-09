@@ -17,7 +17,7 @@ const tagSchema = z
   .max(NOTE_LIMITS.tagMaxLength)
   .regex(/^[^,]*$/, 'A tag must not contain a comma.');
 
-/** One server per request: the user the agent acts for comes from that request's X-User-Id. */
+// One server per request, because the user the agent acts for comes from that request's X-User-Id.
 export function createNotesMcpServer(
   notes: NotesService,
   userName: string,

@@ -5,7 +5,6 @@ export const MOD_KEY_LABEL = IS_MAC ? '⌘' : 'Ctrl'
 
 export type Shortcut = { keys: string[]; description: string }
 
-/** Shown in the help popover; the handlers live in useShortcuts. */
 export const SHORTCUTS: Shortcut[] = [
   { keys: [MOD_KEY_LABEL, 'F'], description: 'Search notes' },
   { keys: ['N'], description: 'New note' },

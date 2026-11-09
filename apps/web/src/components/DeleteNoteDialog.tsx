@@ -68,7 +68,6 @@ function DeleteConfirm({ noteTitle, onConfirm }: Pick<Props, 'noteTitle' | 'onCo
       )}
 
       <AlertDialogFooter>
-        {/* Radix focuses Cancel first, the safe choice. */}
         <AlertDialogCancel>Cancel</AlertDialogCancel>
         {/* A plain Button, not AlertDialogAction: that closes at once and would hide a failed delete. */}
         <Button variant="destructive" onClick={handleConfirm}>

@@ -206,7 +206,6 @@ function Message({ role, icon, danger = false, title, text, action }: MessagePro
   )
 }
 
-// The selected row keeps the tab stop; otherwise the last row reached with the keyboard.
 function rowTabIndex(notes: Note[], selectedId: number | null, focusIndex: number): number {
   const selectedIndex = notes.findIndex((note) => note.id === selectedId)
   return selectedIndex >= 0 ? selectedIndex : Math.min(focusIndex, notes.length - 1)

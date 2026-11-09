@@ -11,7 +11,6 @@ import type { Response } from 'express';
 const INTERNAL_ERROR = 'INTERNAL_ERROR';
 const BAD_REQUEST: number = HttpStatus.BAD_REQUEST;
 
-/** 400 covers every input problem; other codes are the status name, e.g. NOT_FOUND. */
 function codeFor(status: number): string {
   if (status === BAD_REQUEST) return 'VALIDATION_ERROR';
   const name: unknown = HttpStatus[status];
@@ -43,7 +42,6 @@ function messageOf(exception: HttpException): string {
   return exception.message;
 }
 
-/** Every error leaves the API as { error: { code, message } }. */
 @Catch()
 export class ErrorShapeFilter implements ExceptionFilter {
   private readonly logger = new Logger(ErrorShapeFilter.name);

@@ -13,7 +13,6 @@ export type TestApp = {
   close: () => Promise<void>;
 };
 
-/** The real app, configured as in main.ts, on a throwaway SQLite file with the real migrations applied. */
 export async function createTestApp(): Promise<TestApp> {
   const dbDir = mkdtempSync(join(tmpdir(), 'team-notes-'));
   const databaseUrl = `file:${join(dbDir, 'test.db')}`;

@@ -25,7 +25,6 @@ export function formatRelative(iso: string, now: Date = new Date()): string {
   return shortDate.format(date)
 }
 
-/** "Nov 8, 2026, 12:41 PM" */
 export function formatFull(iso: string): string {
   return fullDate.format(new Date(iso))
 }
@@ -37,7 +36,6 @@ export function initials(name: string): string {
   return (first + last).toUpperCase()
 }
 
-/** First non-empty line of the body, without a leading list marker. */
 export function snippet(body: string): string {
   const line = body
     .split('\n')

@@ -3,12 +3,10 @@ import type { CreateNoteInput, Note, NoteSource } from '@team-notes/types';
 import { PrismaService } from '@/prisma/prisma.service';
 import { toNote } from '@/notes/note.mapper';
 
-/** The one place notes are read and written. REST and MCP both call this. */
 @Injectable()
 export class NotesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  /** Newest first. An empty query lists every note; otherwise matches title, body or a tag. */
   async search(query: string): Promise<Note[]> {
     const q = query.trim();
     const rows = await this.prisma.note.findMany({
@@ -49,7 +47,6 @@ export class NotesService {
     return toNote(row);
   }
 
-  /** Returns false when no note has this id. */
   async delete(id: number): Promise<boolean> {
     const { count } = await this.prisma.note.deleteMany({ where: { id } });
     return count > 0;

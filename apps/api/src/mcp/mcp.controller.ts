@@ -13,7 +13,6 @@ import { UserName } from '@/common/user-name';
 import { NotesService } from '@/notes/notes.service';
 import { createNotesMcpServer } from '@/mcp/notes-mcp-server';
 
-/** MCP over Streamable HTTP, stateless: every POST gets a fresh server and transport. */
 @Controller('mcp')
 export class McpController {
   constructor(private readonly notes: NotesService) {}

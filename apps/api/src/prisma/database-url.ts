@@ -1,4 +1,4 @@
-// Shared by prisma.config.ts (CLI) and PrismaService (runtime). Relative to apps/api, where every script runs.
+// Relative to apps/api, where the Prisma CLI and the server both run.
 const DEFAULT_DATABASE_URL = 'file:./prisma/dev.db';
 
 export function databaseUrl(): string {

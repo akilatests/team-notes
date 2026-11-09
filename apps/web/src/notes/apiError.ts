@@ -11,7 +11,6 @@ export class ApiError extends Error {
   }
 }
 
-/** A sentence for the UI explaining why a request failed. */
 export function errorDetail(error: unknown): string {
   if (!(error instanceof ApiError) || error.status === undefined) return 'Check your connection and try again.'
   if (error.status >= HttpStatusCode.InternalServerError) return 'The server had a problem. Try again in a moment.'

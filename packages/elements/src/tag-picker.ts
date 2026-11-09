@@ -6,7 +6,6 @@ const DEFAULT_HINT = 'Press Enter to add a tag. Backspace removes the last one.'
 const DEFAULT_PLACEHOLDER = 'Add a tag'
 const LIMIT_PLACEHOLDER = 'Tag limit reached'
 
-/** Fired after the user adds or removes a tag. Bubbles out of the shadow root. */
 export class TagsChangeEvent extends Event {
   static readonly type = 'tags-change'
   readonly tags: string[]
@@ -72,7 +71,6 @@ function requireElement<T extends Element>(root: ParentNode, selector: string, t
   return element
 }
 
-/** A positive whole number from an attribute, or undefined when missing or invalid. */
 function positiveInt(value: string | null): number | undefined {
   const parsed = Number(value)
   return Number.isInteger(parsed) && parsed > 0 ? parsed : undefined

@@ -47,7 +47,6 @@
     --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Colours from the Team Notes design (PamPam-based). */
 :root {
     --background: #ffffff;
     --foreground: #1a1a1a;

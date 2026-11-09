@@ -34,7 +34,6 @@ export function NotesPage({ user, onSwitchUser }: Props) {
   const isEmpty = list.status === 'ready' && list.notes.length === 0 && query === ''
   // An unfiltered list without the note means the URL points at a deleted or unknown note.
   const isMissing = list.status === 'ready' && selectedId !== null && !selected && query === ''
-  // On phones a selected note replaces the list; Back (or 'All notes') returns to it.
   const mobileView = selectedId === null ? 'list' : 'detail'
 
   // flushSync renders the new state now, so the element we focus next exists.

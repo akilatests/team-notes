@@ -5,7 +5,6 @@ type Props = {
   authorName: string
 }
 
-/** Marks a note an AI agent created on the author's behalf. */
 export function AgentBadge({ authorName }: Props) {
   return (
     <Badge

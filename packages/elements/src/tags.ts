@@ -6,7 +6,6 @@ export function hasTag(tags: readonly string[], tag: string): boolean {
   return tags.some((existing) => existing.toLowerCase() === wanted)
 }
 
-/** The comma-separated tags in `text`, trimmed, without blanks. */
 export function splitTags(text: string): string[] {
   return text
     .split(TAG_SEPARATOR)

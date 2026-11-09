@@ -1,4 +1,4 @@
-// One place for input limits, shared by the REST DTOs and (in t6) the MCP tool schemas.
+// Shared by the REST DTOs and the MCP tool schemas.
 export const NOTE_LIMITS = {
   titleMaxLength: 200,
   bodyMaxLength: 10_000,

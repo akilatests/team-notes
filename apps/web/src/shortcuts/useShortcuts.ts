@@ -16,7 +16,6 @@ function isTyping(event: KeyboardEvent): boolean {
   return target instanceof HTMLElement && (target.isContentEditable || TYPING_TAGS.has(target.tagName))
 }
 
-/** App-wide keyboard shortcuts, the same keydown pattern shadcn uses for its ⌘K command menu. */
 export function useShortcuts({ enabled, onSearch, onNewNote, onHelp }: Handlers) {
   useEffect(() => {
     if (!enabled) return

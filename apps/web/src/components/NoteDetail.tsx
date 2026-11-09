@@ -27,7 +27,6 @@ export function NoteDetail({ className, status, note, isEmpty, isMissing, onDele
       {status !== 'loading' && !note && <Placeholder status={status} isEmpty={isEmpty} isMissing={isMissing} onBack={onBack} />}
       {note && (
         <article aria-labelledby={`note-${note.id}`} className="mx-auto flex w-full max-w-180 flex-col gap-4 px-4 pt-3 pb-10 sm:px-6 md:px-10 md:pt-10 md:pb-16">
-          {/* Phones: actions sit in their own bar so the title gets the full width. */}
           <div className="-mx-2 flex items-center justify-between md:hidden">
             <Button variant="ghost" size="lg" className="text-primary dark:text-accent-foreground" onClick={onBack}>
               <ChevronLeft />

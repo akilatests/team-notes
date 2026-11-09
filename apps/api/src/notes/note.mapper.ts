@@ -15,7 +15,6 @@ function parseTags(json: string): string[] {
   return value;
 }
 
-/** Turns a database row into the shared Note type the web app and MCP tools use. */
 export function toNote(row: NoteRow): Note {
   if (!isNoteSource(row.source)) {
     throw new Error(

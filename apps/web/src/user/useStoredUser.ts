@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 const USER_STORAGE_KEY = 'team-notes.user'
 
-// Fake identity: the name is sent as X-User-Id from t5. Not authentication.
+// Fake identity sent as X-User-Id. Not authentication.
 export function useStoredUser() {
   const [user, setUser] = useState<string | null>(() => localStorage.getItem(USER_STORAGE_KEY))
 

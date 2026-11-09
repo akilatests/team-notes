@@ -1,14 +1,17 @@
 import { NotebookText } from 'lucide-react'
 import { ConnectAgentDialog } from '@/components/ConnectAgentDialog'
 import { ModeToggle } from '@/components/ModeToggle'
+import { ShortcutsHelp } from '@/components/ShortcutsHelp'
 import { UserMenu } from '@/components/UserMenu'
 
 type Props = {
   user: string
   onSwitchUser: () => void
+  helpOpen: boolean
+  onHelpOpenChange: (open: boolean) => void
 }
 
-export function Header({ user, onSwitchUser }: Props) {
+export function Header({ user, onSwitchUser, helpOpen, onHelpOpenChange }: Props) {
   return (
     <header className="flex h-14 flex-none items-center gap-2 border-b px-3 sm:px-6">
       <span className="mr-auto flex min-w-0 items-center gap-2 font-semibold tracking-tight">
@@ -17,6 +20,7 @@ export function Header({ user, onSwitchUser }: Props) {
       </span>
       <div className="flex flex-none items-center gap-1">
         <ConnectAgentDialog user={user} />
+        <ShortcutsHelp open={helpOpen} onOpenChange={onHelpOpenChange} />
         <ModeToggle />
         <UserMenu user={user} onSwitchUser={onSwitchUser} />
       </div>

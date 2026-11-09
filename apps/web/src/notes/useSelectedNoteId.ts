@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 const NOTE_PATH = /^\/notes\/(\d+)$/
 const HOME_PATH = '/'
@@ -21,13 +21,16 @@ export function useSelectedNoteId() {
     return () => window.removeEventListener('popstate', onPopState)
   }, [])
 
-  function selectNote(id: number | null, { replace = false } = {}) {
-    if (id === selectedId) return
-    const url = urlFor(id)
-    if (replace) window.history.replaceState(null, '', url)
-    else window.history.pushState(null, '', url)
-    setSelectedId(id)
-  }
+  const selectNote = useCallback(
+    (id: number | null, { replace = false } = {}) => {
+      if (id === selectedId) return
+      const url = urlFor(id)
+      if (replace) window.history.replaceState(null, '', url)
+      else window.history.pushState(null, '', url)
+      setSelectedId(id)
+    },
+    [selectedId],
+  )
 
   return { selectedId, selectNote }
 }

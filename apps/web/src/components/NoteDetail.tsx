@@ -27,10 +27,17 @@ export function NoteDetail({ className, status, note, isEmpty, isMissing, onDele
       {status !== 'loading' && !note && <Placeholder status={status} isEmpty={isEmpty} isMissing={isMissing} onBack={onBack} />}
       {note && (
         <article aria-labelledby={`note-${note.id}`} className="mx-auto flex w-full max-w-180 flex-col gap-4 px-4 pt-3 pb-10 sm:px-6 md:px-10 md:pt-10 md:pb-16">
-          <Button variant="ghost" size="lg" className="-ml-2 self-start text-primary md:hidden dark:text-accent-foreground" onClick={onBack}>
-            <ChevronLeft />
-            All notes
-          </Button>
+          {/* Phones: actions sit in their own bar so the title gets the full width. */}
+          <div className="-mx-2 flex items-center justify-between md:hidden">
+            <Button variant="ghost" size="lg" className="text-primary dark:text-accent-foreground" onClick={onBack}>
+              <ChevronLeft />
+              All notes
+            </Button>
+            <Button variant="ghost" size="icon-lg" className="text-destructive" onClick={onDelete}>
+              <Trash2 />
+              <span className="sr-only">Delete note</span>
+            </Button>
+          </div>
           <div className="flex items-start justify-between gap-4">
             <h1
               id={`note-${note.id}`}
@@ -40,7 +47,7 @@ export function NoteDetail({ className, status, note, isEmpty, isMissing, onDele
             >
               {note.title}
             </h1>
-            <Button variant="outline" size="lg" className="flex-none text-destructive" onClick={onDelete}>
+            <Button variant="outline" size="lg" className="flex-none text-destructive max-md:hidden" onClick={onDelete}>
               <Trash2 />
               Delete
             </Button>

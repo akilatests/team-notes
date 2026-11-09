@@ -1,9 +1,10 @@
 import type { CreateNoteInput } from '@team-notes/types'
-import { useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import { toast } from 'sonner'
 import { useNotes } from '@/notes/useNotes'
 import { useSelectedNoteId } from '@/notes/useSelectedNoteId'
+import { useShortcuts } from '@/shortcuts/useShortcuts'
 import { CreateNoteDialog } from '@/components/CreateNoteDialog'
 import { DeleteNoteDialog } from '@/components/DeleteNoteDialog'
 import { Header } from '@/components/Header'
@@ -25,6 +26,7 @@ export function NotesPage({ user, onSwitchUser }: Props) {
   const { list, reload, createNote, deleteNote } = useNotes(user, query)
   const { selectedId, selectNote } = useSelectedNoteId()
   const [dialog, setDialog] = useState<OpenDialog>(null)
+  const [helpOpen, setHelpOpen] = useState(false)
   const searchRef = useRef<HTMLInputElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
 
@@ -45,6 +47,17 @@ export function NotesPage({ user, onSwitchUser }: Props) {
     // On phones the list disappears, so move focus to the note instead of losing it.
     if (window.matchMedia(MOBILE_QUERY).matches) headingRef.current?.focus()
   }
+
+  const focusSearch = useCallback(() => {
+    // On phones the search box is hidden while a note is open, so go back to the list first.
+    if (window.matchMedia(MOBILE_QUERY).matches) flushSync(() => selectNote(null))
+    searchRef.current?.focus()
+    searchRef.current?.select()
+  }, [selectNote])
+  const openCreate = useCallback(() => setDialog('create'), [])
+  const toggleHelp = useCallback(() => setHelpOpen((open) => !open), [])
+
+  useShortcuts({ enabled: dialog === null, onSearch: focusSearch, onNewNote: openCreate, onHelp: toggleHelp })
 
   async function handleCreate(input: CreateNoteInput) {
     const note = await createNote(input)
@@ -70,7 +83,7 @@ export function NotesPage({ user, onSwitchUser }: Props) {
 
   return (
     <div className="flex h-dvh flex-col">
-      <Header user={user} onSwitchUser={onSwitchUser} />
+      <Header user={user} onSwitchUser={onSwitchUser} helpOpen={helpOpen} onHelpOpenChange={setHelpOpen} />
       <div className="group flex min-h-0 flex-1" data-view={mobileView}>
         <NoteList
           className="min-w-0 flex-1 max-md:group-data-[view=detail]:hidden md:flex-[0_0_20rem] md:border-r lg:flex-[0_0_22.5rem] xl:flex-[0_0_25rem]"
@@ -79,7 +92,7 @@ export function NotesPage({ user, onSwitchUser }: Props) {
           onQueryChange={setQuery}
           selectedId={selectedId}
           onOpen={handleOpen}
-          onNewNote={() => setDialog('create')}
+          onNewNote={openCreate}
           onRetry={() => void reload()}
           searchRef={searchRef}
         />

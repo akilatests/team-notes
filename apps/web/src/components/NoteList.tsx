@@ -4,8 +4,10 @@ import { useState, type KeyboardEvent, type ReactNode, type RefObject } from 're
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Input } from '@/components/ui/input'
+import { Kbd, KbdGroup } from '@/components/ui/kbd'
 import { Skeleton } from '@/components/ui/skeleton'
 import { INPUT_LIMITS } from '@/limits'
+import { MOD_KEY_LABEL } from '@/shortcuts/shortcuts'
 import type { NoteList as NoteListState } from '@/notes/useNotes'
 import { NoteRow } from '@/components/NoteRow'
 
@@ -82,6 +84,12 @@ export function NoteList({
               setFocusIndex(0)
             }}
           />
+          {!query && (
+            <KbdGroup aria-hidden="true" className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 max-sm:hidden">
+              <Kbd>{MOD_KEY_LABEL}</Kbd>
+              <Kbd>F</Kbd>
+            </KbdGroup>
+          )}
           {query && (
             <Button
               variant="ghost"
@@ -94,9 +102,9 @@ export function NoteList({
             </Button>
           )}
         </div>
-        <Button size="lg" onClick={onNewNote}>
+        <Button size="lg" className="max-sm:w-9 max-sm:px-0" onClick={onNewNote}>
           <Plus />
-          New note
+          <span className="max-sm:sr-only">New note</span>
         </Button>
       </div>
 
